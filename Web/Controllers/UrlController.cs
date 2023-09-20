@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Web.Controllers
 {
+    [Route("api")]
     public class UrlController : Controller
     {
         private readonly IUrlService _urlService;
@@ -13,31 +13,49 @@ namespace Web.Controllers
             _urlService = urlService;
         }
 
+        [HttpGet("short-urls")]
         public async Task<IActionResult> GetShortUrlsAsync(int page = 0)
         {
-            var urlPairs = await _urlService.GetShortUrlsAsync(page);
+            var shortUrls = await _urlService.GetShortUrlsAsync(page);
 
-            return Ok(urlPairs);
+            return Ok(shortUrls);
         }
 
+        [HttpGet("short-urls/{id:Guid}")]
         [ActionName("GetShortUrlAsync")]
-        public async Task<IActionResult> GetShortUrlAsync(Uri uri)
+        public async Task<IActionResult> GetShortUrlAsync(Guid id)
         {
-            var urlPair = await _urlService.GetShortUrlAsync(uri);
+            var shortUrl = await _urlService.GetShortUrlByIdAsync(id);
 
-            if (urlPair is null)
+            if (shortUrl is null)
             { 
                 return NotFound();
             }
 
-            return Ok(urlPair);
+            return Ok(shortUrl);
         }
 
-        public async Task<IActionResult> ShortenUrl(Uri uri)
+        [HttpPost("short-urls")]
+        public async Task<IActionResult> ShortenUrl([FromBody] Uri url)
         {
-            var urlPair = await _urlService.ShortenUrlAsync(uri);
+            var shortUrl = await _urlService.ShortenUrlAsync(url);
 
-            return CreatedAtAction("GetShortUrlAsync", urlPair);
+            return CreatedAtAction(nameof(GetShortUrlAsync), new { url = shortUrl.LongUrl }, shortUrl);
+        }
+
+        [HttpDelete("short-urls/{id:Guid}")]
+        public async Task<IActionResult> DeleteShortUrl(Guid id)
+        {
+            var shortUrl = await _urlService.GetShortUrlByIdAsync(id);
+
+            if (shortUrl is null)
+            {
+                return NotFound();
+            }
+
+            await _urlService.DeleteShortUrlAsync(shortUrl);
+
+            return NoContent();
         }
     }
 }

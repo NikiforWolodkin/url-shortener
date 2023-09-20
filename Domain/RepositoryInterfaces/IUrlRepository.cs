@@ -4,10 +4,13 @@ namespace Domain.RepositoryInterfaces
 {
     public interface IUrlRepository
     {
-        Task<ICollection<ShortLongUrlPair>> GetShortUrlsAsync(int page);
-        Task<ShortLongUrlPair?> GetShortUrlAsync(Uri uri);
-        Task<ShortLongUrlPair> AddShortUrlAsync(ShortLongUrlPair urlPair);
-        Task DeleteShortUrlAsync(ShortLongUrlPair urlPair);
+        Task<ICollection<ShortUrl>> GetShortUrlsAsync(int page);
+        Task<ShortUrl?> GetShortUrlByIdAsync(Guid id);
+        Task<ShortUrl?> GetShortUrlByLongUrlAsync(Uri url);
+        Task<ShortUrl?> GetShortUrlByShortUrlIdAsync(string urlId);
+        Task<bool> ContainsShortUrlAsync(string urlId); 
+        Task AddShortUrlAsync(ShortUrl shortUrl);
+        void DeleteShortUrl(ShortUrl shortUrl);
         Task SaveChangesAsync();
     }
 }

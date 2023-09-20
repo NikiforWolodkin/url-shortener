@@ -4,10 +4,12 @@ namespace Services.Interfaces
 {
     public interface IUrlService
     {
-        Task<ICollection<ShortLongUrlPair>> GetShortUrlsAsync(int page);
-        Task<ShortLongUrlPair?> GetShortUrlAsync(Uri uri);
-        Task<ShortLongUrlPair> ShortenUrlAsync(Uri uri);
-        Task IncrementUrlClickCount(ShortLongUrlPair urlPair);
-        Task DeleteShortUrlAsync(ShortLongUrlPair urlPair);
+        Task<ICollection<ShortUrl>> GetShortUrlsAsync(int page);
+        Task<ShortUrl?> GetShortUrlByIdAsync(Guid id);
+        Task<ShortUrl?> GetShortUrlByLongUrlAsync(Uri url);
+        Task<ShortUrl?> GetShortUrlByShortUrlIdAsync(string urlId);
+        Task<ShortUrl> ShortenUrlAsync(Uri url);
+        Task IncrementUrlClickCount(ShortUrl shortUrl);
+        Task DeleteShortUrlAsync(ShortUrl shortUrl);
     }
 }

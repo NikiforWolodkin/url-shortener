@@ -1,9 +1,10 @@
 ﻿namespace Domain.Entities
 {
-    public class ShortLongUrlPair
+    public class ShortUrl
     {
+        public Guid Id { get; set; }
         public Uri LongUrl { get; set; }
-        public Uri ShortUrl { get; set; }
+        public string ShortUrlId { get; set; }
         public int ClickCount { get; set; }
         public DateTime CreationTime { get; set; }
     }
