@@ -1,0 +1,38 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p><a href="shorten-link">Shorten a link</a></p>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Long URL</th>
+            <th>Short URL ID</th>
+            <th>Click Count</th>
+            <th>Creation Time</th>
+            <th></th> <!-- Column for the delete button -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ShortUrls)
+        {
+            <tr>
+                <td>@item.LongUrl</td>
+                <td>@item.ShortUrlId</td>
+                <td>@item.ClickCount</td>
+                <td>@item.CreationTime</td>
+                <td>
+                    <!-- Form for the delete button -->
+                    <form asp-action="DeleteShortUrl" asp-route-id="@item.Id" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

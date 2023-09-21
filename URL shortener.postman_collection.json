@@ -1,0 +1,130 @@
+{
+	"info": {
+		"_postman_id": "b7941bcb-23bf-437a-ab17-a78036fe46b5",
+		"name": "URL shortener",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28253557"
+	},
+	"item": [
+		{
+			"name": "Redirect to short link destination",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get short links",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7054/api/short-urls",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7054",
+					"path": [
+						"api",
+						"short-urls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get short link by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\"https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-6.0\"",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7054/api/short-urls/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7054",
+					"path": [
+						"api",
+						"short-urls",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Shorten link",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\"https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-6.0\"",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7054/api/short-urls",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7054",
+					"path": [
+						"api",
+						"short-urls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete short link",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\"https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-6.0\"",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7054/api/short-urls/3sf93Wh",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7054",
+					"path": [
+						"api",
+						"short-urls",
+						"3sf93Wh"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

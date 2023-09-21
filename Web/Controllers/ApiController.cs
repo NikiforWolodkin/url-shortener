@@ -4,11 +4,11 @@ using Services.Interfaces;
 namespace Web.Controllers
 {
     [Route("api")]
-    public class UrlController : Controller
+    public class ApiController : Controller
     {
         private readonly IUrlService _urlService;
 
-        public UrlController(IUrlService urlService)
+        public ApiController(IUrlService urlService)
         {
             _urlService = urlService;
         }
@@ -22,7 +22,6 @@ namespace Web.Controllers
         }
 
         [HttpGet("short-urls/{id:Guid}")]
-        [ActionName("GetShortUrlAsync")]
         public async Task<IActionResult> GetShortUrlAsync(Guid id)
         {
             var shortUrl = await _urlService.GetShortUrlByIdAsync(id);
@@ -40,7 +39,7 @@ namespace Web.Controllers
         {
             var shortUrl = await _urlService.ShortenUrlAsync(url);
 
-            return CreatedAtAction(nameof(GetShortUrlAsync), new { url = shortUrl.LongUrl }, shortUrl);
+            return CreatedAtAction("GetShortUrl", new { id = shortUrl.Id }, shortUrl);
         }
 
         [HttpDelete("short-urls/{id:Guid}")]
