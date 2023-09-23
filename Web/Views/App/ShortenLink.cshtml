@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Create short link";
+}
+
+<h1>Create short link</h1>
+
+<form asp-controller="App" asp-action="ShortenLink" method="post">
+    <div class="label-container">
+        <label for="url">URL:</label>
+    </div>
+    <div>
+        <input type="text" id="url" name="url" class="url-input" required />
+    </div>
+
+    <div>
+        <button type="submit" class="shorten-url-button">Create</button>
+    </div>
+</form>

@@ -3,16 +3,13 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p><a href="shorten-link">Shorten a link</a></p>
-</div>
+<h1>Short links</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>Long URL</th>
-            <th>Short URL ID</th>
+            <th>Short URL</th>
             <th>Click Count</th>
             <th>Creation Time</th>
             <th></th> <!-- Column for the delete button -->
@@ -22,14 +19,14 @@
         @foreach (var item in Model.ShortUrls)
         {
             <tr>
-                <td>@item.LongUrl</td>
-                <td>@item.ShortUrlId</td>
+                <td><a href="@item.LongUrl">@item.LongUrl</a></td>
+                <td><a href="@item.ShortUrl"> @item.ShortUrl</a></td>
                 <td>@item.ClickCount</td>
                 <td>@item.CreationTime</td>
                 <td>
                     <!-- Form for the delete button -->
                     <form asp-action="DeleteShortUrl" asp-route-id="@item.Id" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="delete-button">Delete</button>
                     </form>
                 </td>
             </tr>

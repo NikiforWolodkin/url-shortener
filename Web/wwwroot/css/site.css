@@ -1,18 +1,117 @@
-html {
-  font-size: 14px;
-}
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+* {
+    font-family: 'Rubik', system-ui, sans-serif;
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+}
+
+main {
+    max-width: 72rem;
+    margin: auto;
+}
+
+header {
+    border-bottom: 1px solid black;
+    padding: 1rem 1.5rem;
+}
+
+header a {
+    color: black;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+header a:hover {
+    color: #2563eb;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead tr {
+    font-size: 1.25rem;
+    border-bottom: 1px solid black;
+}
+
+td:first-child {
+    width: 30%;
+}
+
+td:last-child {
+    width: 30%;
+}
+
+td {
+    width: 20%;
+    padding: 0.5rem 0.25rem;
+    vertical-align: central;
+}
+
+th {
+    padding: 0.75rem 0.25rem;
+    text-align: left;
+}
+
+h1 {
+    width: 100%; 
+    margin: 1.5rem 0;
+    font-size: 2rem;
+    text-align: center;
+}
+
+form {
+    text-align: center;
+}
+
+.delete-button {
+    width: 100%;
+    padding: 0.25rem 0;
+    font-size: 1.10rem;
+    border-radius: 0.25rem;
+    border: none;
+    color: white;
+    background-color: #ef4444;
+}
+
+.shorten-url-button {
+    cursor: pointer;
+    padding: 0.25rem 0;
+    margin: 1rem 0;
+    width: 32rem;
+    font-size: 1.5rem;
+    background-color: white;
+    border-radius: 0.25rem;
+    border: 1px solid black;
+}
+
+.shorten-url-button:hover {
+    color: #2563eb;
+    border: 1px solid #2563eb;
+}
+
+.url-input {
+    padding: 0.25rem 1rem;
+    width: 29.8125rem;
+    font-size: 1.5rem;
+    background-color: white;
+    border-radius: 0.25rem;
+    border: 1px solid black;
+}
+
+.label-container {
+    width: 32rem;
+    text-align: left;
+    margin: 1rem auto;
+    font-size: 1.5rem;
+}
+
+.label-container label {
+    margin-left: 1rem;
 }

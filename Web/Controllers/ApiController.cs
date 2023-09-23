@@ -45,14 +45,7 @@ namespace Web.Controllers
         [HttpDelete("short-urls/{id:Guid}")]
         public async Task<IActionResult> DeleteShortUrl(Guid id)
         {
-            var shortUrl = await _urlService.GetShortUrlByIdAsync(id);
-
-            if (shortUrl is null)
-            {
-                return NotFound();
-            }
-
-            await _urlService.DeleteShortUrlAsync(shortUrl);
+            await _urlService.DeleteShortUrlAsync(id);
 
             return NoContent();
         }

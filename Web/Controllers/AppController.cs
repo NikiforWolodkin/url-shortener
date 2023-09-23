@@ -29,7 +29,7 @@ namespace Web.Controllers
         }
 
         [HttpGet("shorten-link")]
-        public async Task<IActionResult> CreateLinkAsync()
+        public async Task<IActionResult> ShortenLinkAsync()
         {
             return View();
         }
@@ -45,11 +45,7 @@ namespace Web.Controllers
         [HttpPost("delete/{id:Guid}")]
         public async Task<IActionResult> DeleteShortUrlAsync(Guid id)
         {
-            var shortUrl = await _urlService.GetShortUrlByIdAsync(id);
-
-            // TODO: handle null
-
-            await _urlService.DeleteShortUrlAsync(shortUrl);
+            await _urlService.DeleteShortUrlAsync(id);
 
             return RedirectToAction("Index");
         }

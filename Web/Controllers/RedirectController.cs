@@ -19,7 +19,7 @@ namespace Web.Controllers
 
             if (shortUrl is not null)
             {
-                await _urlService.IncrementUrlClickCount(shortUrl);
+                await _urlService.IncrementUrlClickCount(shortUrl.Id);
 
                 return Redirect(shortUrl.LongUrl.ToString());
             }
