@@ -71,6 +71,7 @@ form {
 }
 
 .delete-button {
+    cursor: pointer;
     width: 100%;
     padding: 0.25rem 0;
     font-size: 1.10rem;

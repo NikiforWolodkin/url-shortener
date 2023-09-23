@@ -1,38 +1,42 @@
 ﻿using Domain.Entities;
 using Domain.RepositoryInterfaces;
-using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Infrastructure.Repositories
 {
-    public class UrlRepository : IUrlRepository
+    public class UrlRepository : IUrlRepository, IDisposable
     {
-        private const int PageSize = 50;
-        private readonly DataContext _context;
+        private readonly ISession _session;
+        private ITransaction _transaction;
+        private bool _disposed = true;
 
-        public UrlRepository(DataContext context)
+        public UrlRepository(ISessionFactory sessionFactory)
         {
-            _context = context;
+            _session = sessionFactory.OpenSession();
         }
 
-        async Task<ShortUrl?> IUrlRepository.GetShortUrlByShortUrlIdAsync(string urlId)
+        async Task IUrlRepository.AddAsync(ShortUrl shortUrl)
         {
-            return await _context.ShortUrls
-                .FirstOrDefaultAsync(shortUrl => shortUrl.ShortUrlId == urlId);
+            await _session.SaveAsync(shortUrl);
         }
 
-        async Task IUrlRepository.AddShortUrlAsync(ShortUrl shortUrl)
+        async Task IUrlRepository.DeleteAsync(ShortUrl shortUrl)
         {
-            await _context.ShortUrls.AddAsync(shortUrl);
+            await _session.DeleteAsync(shortUrl);
         }
 
-        async Task<bool> IUrlRepository.ContainsShortUrlAsync(string urlId)
+        async Task IUrlRepository.UpdateAsync(ShortUrl shortUrl)
         {
-            var url = await _context.ShortUrls
-                .FirstOrDefaultAsync(shortUrl => shortUrl.ShortUrlId == urlId);
+            await _session.UpdateAsync(shortUrl);
+        }
 
-            if (url is null)
+        async Task<bool> IUrlRepository.ContainsAsync(string urlId)
+        {
+            var shortUrl = await _session.Query<ShortUrl>()
+                .FirstOrDefaultAsync(url => url.ShortUrlId == urlId);
+
+            if (shortUrl is null)
             {
                 return false;
             }
@@ -40,34 +44,62 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        void IUrlRepository.DeleteShortUrl(ShortUrl shortUrl)
+        async Task<ICollection<ShortUrl>> IUrlRepository.GetAllAsync()
         {
-            _context.ShortUrls.Remove(shortUrl);
+            return await _session.Query<ShortUrl>().ToListAsync();
         }
 
-        async Task<ShortUrl?> IUrlRepository.GetShortUrlByLongUrlAsync(Uri url)
+        async Task<ShortUrl?> IUrlRepository.GetByIdAsync(Guid id)
         {
-            return await _context.ShortUrls
+            return await _session.GetAsync<ShortUrl>(id);
+        }
+
+        async Task<ShortUrl?> IUrlRepository.GetByLongUrlAsync(Uri url)
+        {
+            return await _session.Query<ShortUrl>()
                 .FirstOrDefaultAsync(shortUrl => shortUrl.LongUrl == url);
         }
 
-        async Task<ICollection<ShortUrl>> IUrlRepository.GetShortUrlsAsync(int page)
+        async Task<ShortUrl?> IUrlRepository.GetByShortUrlIdAsync(string urlId)
         {
-            return await _context.ShortUrls
-                .Skip(page * PageSize)
-                .Take(PageSize)
-                .ToListAsync();
+            return await _session.Query<ShortUrl>()
+                .FirstOrDefaultAsync(shortUrl => shortUrl.ShortUrlId == urlId);
         }
 
-        async Task IUrlRepository.SaveChangesAsync()
+        void IUrlRepository.BeginTransaction()
         {
-            await _context.SaveChangesAsync();
+            _transaction = _session.BeginTransaction();
+            _disposed = false;
         }
 
-        async Task<ShortUrl?> IUrlRepository.GetShortUrlByIdAsync(Guid id)
+        void IUrlRepository.CommitTransaction()
         {
-            return await _context.ShortUrls
-                .FirstOrDefaultAsync(shortUrl => shortUrl.Id == id);
+            _transaction.Commit();
+            _transaction.Dispose();
+            _disposed = true;
+        }
+
+        void IUrlRepository.RollbackTransaction()
+        {
+            _transaction.Rollback();
+            _transaction.Dispose();
+            _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed == false && _transaction is not null)
+            {
+                _transaction.Rollback();
+                _transaction.Dispose();
+            }
+
+            if (_session is not null)
+            {
+                _session.Flush();
+                _session.Close();
+                _session.Dispose();
+            }
         }
     }
 }

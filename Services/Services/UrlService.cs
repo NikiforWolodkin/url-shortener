@@ -22,42 +22,58 @@ namespace Services.Services
 
         async Task IUrlService.DeleteShortUrlAsync(Guid id)
         {
-            var shortUrl = await _urlRepository.GetShortUrlByIdAsync(id);
+            _urlRepository.BeginTransaction();
 
-            _urlRepository.DeleteShortUrl(shortUrl);
+            var shortUrl = await _urlRepository.GetByIdAsync(id);
 
-            await _urlRepository.SaveChangesAsync();
+            if (shortUrl is not null)
+            {
+                await _urlRepository.DeleteAsync(shortUrl);
+            }
+
+            _urlRepository.CommitTransaction();
         }
 
         async Task<ShortUrlDto?> IUrlService.GetShortUrlByLongUrlAsync(Uri url)
         {
-            var shortUrl = await _urlRepository.GetShortUrlByLongUrlAsync(url);
+            var shortUrl = await _urlRepository.GetByLongUrlAsync(url);
 
             return _mapper.ToDto(shortUrl);
         }
 
         async Task<ICollection<ShortUrlDto>> IUrlService.GetShortUrlsAsync(int page)
         {
-            var shortUrls = await _urlRepository.GetShortUrlsAsync(page);
+            var shortUrls = await _urlRepository.GetAllAsync();
 
             return _mapper.ToDto(shortUrls);
         }
 
         async Task IUrlService.IncrementUrlClickCount(Guid id)
         {
-            var shortUrl = await _urlRepository.GetShortUrlByIdAsync(id);
+            _urlRepository.BeginTransaction();
 
-            shortUrl.ClickCount++;
+            var shortUrl = await _urlRepository.GetByIdAsync(id);
 
-            await _urlRepository.SaveChangesAsync();
+            if (shortUrl is not null)
+            {
+                shortUrl.ClickCount++;
+
+                await _urlRepository.UpdateAsync(shortUrl);
+            }
+
+            _urlRepository.CommitTransaction();
         }
 
         async Task<ShortUrlDto> IUrlService.ShortenUrlAsync(Uri url)
         {
-            var existingShortUrl = await _urlRepository.GetShortUrlByLongUrlAsync(url);
+            _urlRepository.BeginTransaction();
+
+            var existingShortUrl = await _urlRepository.GetByLongUrlAsync(url);
 
             if (existingShortUrl is not null)
             {
+                _urlRepository.CommitTransaction();
+
                 return _mapper.ToDto(existingShortUrl);
             }    
 
@@ -71,23 +87,23 @@ namespace Services.Services
                 CreationTime = DateTime.UtcNow
             };
 
-            await _urlRepository.AddShortUrlAsync(shortUrl);
+            await _urlRepository.AddAsync(shortUrl);
 
-            await _urlRepository.SaveChangesAsync();
+            _urlRepository.CommitTransaction();
 
             return _mapper.ToDto(shortUrl);
         }
 
         async Task<ShortUrlDto?> IUrlService.GetShortUrlByShortUrlIdAsync(string urlId)
         {
-            var shortUrl = await _urlRepository.GetShortUrlByShortUrlIdAsync(urlId);
+            var shortUrl = await _urlRepository.GetByShortUrlIdAsync(urlId);
 
             return _mapper.ToDto(shortUrl);
         }
 
         async Task<ShortUrlDto?> IUrlService.GetShortUrlByIdAsync(Guid id)
         {
-            var shortUrl = await _urlRepository.GetShortUrlByIdAsync(id);
+            var shortUrl = await _urlRepository.GetByIdAsync(id);
 
             return _mapper.ToDto(shortUrl);
         }
@@ -101,7 +117,7 @@ namespace Services.Services
             var intRepresentation = BigInteger.Abs(new BigInteger(bytes.Reverse().ToArray()));
             var hash = ToBase62(intRepresentation).Substring(0, 7);
 
-            while (await _urlRepository.ContainsShortUrlAsync(hash))
+            while (await _urlRepository.ContainsAsync(hash))
             {
                 hash = IncrementChars(hash);
             }

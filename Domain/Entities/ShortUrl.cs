@@ -2,10 +2,10 @@
 {
     public class ShortUrl
     {
-        public Guid Id { get; set; }
-        public Uri LongUrl { get; set; }
-        public string ShortUrlId { get; set; }
-        public int ClickCount { get; set; }
-        public DateTime CreationTime { get; set; }
+        public virtual Guid Id { get; set; }
+        public virtual Uri LongUrl { get; set; }
+        public virtual string ShortUrlId { get; set; }
+        public virtual int ClickCount { get; set; }
+        public virtual DateTime CreationTime { get; set; }
     }
 }

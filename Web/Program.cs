@@ -1,7 +1,6 @@
 using Domain.RepositoryInterfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Services.Interfaces;
 using Services.Services;
 
@@ -14,12 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContextPool<DataContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-});
+builder.Services.AddSingleton(Database.CreateSessionFactory());
 
 builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 builder.Services.AddScoped<IUrlService, UrlService>();
