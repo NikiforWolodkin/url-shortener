@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using FluentNHibernate.Cfg.Db;
+﻿using FluentNHibernate.Cfg.Db;
 using FluentNHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using NHibernate;
@@ -10,24 +9,20 @@ namespace Infrastructure.Data
 {
     public static class Database
     {
-        public static ISessionFactory CreateSessionFactory()
+        public static ISessionFactory CreateSessionFactory(string connectionString)
         {
             return Fluently.Configure()
                 .Database(
                     MySQLConfiguration.Standard
-                        .ConnectionString(c => c
-                            .Server("localhost")
-                            .Database("urlshortenerdb")
-                            .Username("root")
-                            .Password("SYSTEM")))
+                        .ConnectionString(connectionString))
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<ShortUrlMap>())
-                .ExposeConfiguration(BuildSchema)
+                .ExposeConfiguration(UpdateSchema)
                 .BuildSessionFactory();
         }
 
-        private static void BuildSchema(Configuration config)
+        private static void UpdateSchema(Configuration config)
         {
-            new SchemaExport(config).Create(false, true);
+            new SchemaUpdate(config).Execute(false, true);
         }
     }
 }

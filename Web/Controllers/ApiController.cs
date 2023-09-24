@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
+using Web.Models;
+using Web.Validators;
 
 namespace Web.Controllers
 {
@@ -35,9 +37,14 @@ namespace Web.Controllers
         }
 
         [HttpPost("short-urls")]
-        public async Task<IActionResult> ShortenUrl([FromBody] Uri url)
+        public async Task<IActionResult> ShortenUrl(ShortenLinkRequestModel requestModel)
         {
-            var shortUrl = await _urlService.ShortenUrlAsync(url);
+            if (!UrlValidator.IsValidUrl(requestModel.Url))
+            {
+                return BadRequest("URL is invalid.");
+            }
+
+            var shortUrl = await _urlService.ShortenUrlAsync(requestModel.Url);
 
             return CreatedAtAction("GetShortUrl", new { id = shortUrl.Id }, shortUrl);
         }

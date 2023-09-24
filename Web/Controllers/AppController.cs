@@ -2,6 +2,7 @@
 using Services.Interfaces;
 using System.Diagnostics;
 using Web.Models;
+using Web.Validators;
 
 namespace Web.Controllers
 {
@@ -20,23 +21,27 @@ namespace Web.Controllers
         {
             var shortUrls = await _urlService.GetShortUrlsAsync(0);
 
-            var indexViewModel = new IndexViewModel
-            {
-                ShortUrls = shortUrls.ToList(),
-            };
+            var indexViewModel = new IndexViewModel(shortUrls.ToList());
 
             return View(indexViewModel);
         }
 
-        [HttpGet("shorten-link")]
-        public async Task<IActionResult> ShortenLinkAsync()
+        [HttpGet("create-short-link")]
+        public async Task<IActionResult> CreateShortLinkAsync(string? url, bool? isValid)
         {
-            return View();
+            var shortenLinkViewModel = new ShortenLinkViewModel(url, isValid);
+
+            return View(shortenLinkViewModel);
         }
 
         [HttpPost("shorten")]
         public async Task<IActionResult> ShortenLinkAsync(ShortenLinkRequestModel requestModel)
         {
+            if (!UrlValidator.IsValidUrl(requestModel.Url))
+            {
+                return RedirectToAction("createshortlink", new { url = requestModel.Url.ToString(), isValid = false });
+            }
+
             await _urlService.ShortenUrlAsync(requestModel.Url);
 
             return RedirectToAction("index");
@@ -48,12 +53,6 @@ namespace Web.Controllers
             await _urlService.DeleteShortUrlAsync(id);
 
             return RedirectToAction("Index");
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

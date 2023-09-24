@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.RepositoryInterfaces;
+using Microsoft.Extensions.Configuration;
 using Services.Dtos;
 using Services.Interfaces;
 using Services.Mappers;
@@ -13,11 +14,15 @@ namespace Services.Services
     {
         private const string Base62CharSet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         private readonly IUrlRepository _urlRepository;
-        private readonly ShortUrlMapper _mapper = new (new Uri("https://localhost:7054"));
+        private readonly ShortUrlMapper _mapper;
 
-        public UrlService(IUrlRepository urlRepository)
+        public UrlService(IUrlRepository urlRepository, IConfiguration configuration)
         {
             _urlRepository = urlRepository;
+
+            var hostUrl = configuration.GetSection("HostUrl").Value;
+
+            _mapper = new(new Uri(hostUrl));
         }
 
         async Task IUrlService.DeleteShortUrlAsync(Guid id)

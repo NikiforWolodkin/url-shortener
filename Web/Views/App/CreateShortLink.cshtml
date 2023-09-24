@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ShortenLinkViewModel
+@{
     ViewData["Title"] = "Create short link";
 }
 
@@ -8,8 +9,14 @@
     <div class="label-container">
         <label for="url">URL:</label>
     </div>
+    @if (!Model.IsValid)
+    {
+        <div class="label-container invalid-url">
+            URL is invalid.
+        </div>
+    }
     <div>
-        <input type="text" id="url" name="url" class="url-input" required />
+        <input type="text" id="url" name="url" class="url-input" value="@Model.Url" required />
     </div>
 
     <div>

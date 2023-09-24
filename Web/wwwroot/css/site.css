@@ -108,11 +108,12 @@ form {
 
 .label-container {
     width: 32rem;
+    padding-left: 1rem;
     text-align: left;
     margin: 1rem auto;
     font-size: 1.5rem;
 }
 
-.label-container label {
-    margin-left: 1rem;
+.invalid-url {
+    color: #ef4444;
 }
