@@ -25,7 +25,7 @@ namespace Services.Services
             _mapper = new(new Uri(hostUrl));
         }
 
-        async Task IUrlService.DeleteShortUrlAsync(Guid id)
+        async Task IUrlService.DeleteAsync(Guid id)
         {
             _urlRepository.BeginTransaction();
 
@@ -39,14 +39,14 @@ namespace Services.Services
             _urlRepository.CommitTransaction();
         }
 
-        async Task<ShortUrlDto?> IUrlService.GetShortUrlByLongUrlAsync(Uri url)
+        async Task<ShortUrlDto?> IUrlService.GetByLongUrlAsync(Uri url)
         {
             var shortUrl = await _urlRepository.GetByLongUrlAsync(url);
 
             return _mapper.ToDto(shortUrl);
         }
 
-        async Task<ICollection<ShortUrlDto>> IUrlService.GetShortUrlsAsync(int page)
+        async Task<ICollection<ShortUrlDto>> IUrlService.GetAllAsync(int page)
         {
             var shortUrls = await _urlRepository.GetAllAsync();
 
@@ -75,6 +75,7 @@ namespace Services.Services
 
             var existingShortUrl = await _urlRepository.GetByLongUrlAsync(url);
 
+            // Return the existing short link if it already exists for the URL
             if (existingShortUrl is not null)
             {
                 _urlRepository.CommitTransaction();
@@ -99,14 +100,14 @@ namespace Services.Services
             return _mapper.ToDto(shortUrl);
         }
 
-        async Task<ShortUrlDto?> IUrlService.GetShortUrlByShortUrlIdAsync(string urlId)
+        async Task<ShortUrlDto?> IUrlService.GetByShortUrlIdAsync(string urlId)
         {
             var shortUrl = await _urlRepository.GetByShortUrlIdAsync(urlId);
 
             return _mapper.ToDto(shortUrl);
         }
 
-        async Task<ShortUrlDto?> IUrlService.GetShortUrlByIdAsync(Guid id)
+        async Task<ShortUrlDto?> IUrlService.GetByIdAsync(Guid id)
         {
             var shortUrl = await _urlRepository.GetByIdAsync(id);
 
@@ -119,9 +120,13 @@ namespace Services.Services
 
             var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
 
+            // Get the hash representation in the form of a base62 string
+            // and take the first 7 symbols for the short link
             var intRepresentation = BigInteger.Abs(new BigInteger(bytes.Reverse().ToArray()));
             var hash = ToBase62(intRepresentation).Substring(0, 7);
 
+            // If such short link already exists for a different URL increment
+            // the chars to avoid collision
             while (await _urlRepository.ContainsAsync(hash))
             {
                 hash = IncrementChars(hash);

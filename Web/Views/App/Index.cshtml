@@ -33,3 +33,11 @@
         }
     </tbody>
 </table>
+
+@if (Model.ShortUrls.Count() == 0)
+{
+    <div class="no-urls-message">
+        There are no short links yet.
+        <a href="create-short-link">Create one</a>
+    </div>
+}

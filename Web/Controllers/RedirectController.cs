@@ -15,7 +15,7 @@ namespace Web.Controllers
         [HttpGet("{urlId}")]
         public async Task<IActionResult> RedirectAsync(string urlId)
         {
-            var shortUrl = await _urlService.GetShortUrlByShortUrlIdAsync(urlId);
+            var shortUrl = await _urlService.GetByShortUrlIdAsync(urlId);
 
             if (shortUrl is not null)
             {

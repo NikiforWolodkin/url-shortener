@@ -114,6 +114,13 @@ form {
     font-size: 1.5rem;
 }
 
+.no-urls-message {
+    width: 100%;
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.5rem;
+}
+
 .invalid-url {
     color: #ef4444;
 }

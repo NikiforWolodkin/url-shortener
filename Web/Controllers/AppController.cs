@@ -19,7 +19,7 @@ namespace Web.Controllers
         [HttpGet("index")]
         public async Task<IActionResult> IndexAsync()
         {
-            var shortUrls = await _urlService.GetShortUrlsAsync(0);
+            var shortUrls = await _urlService.GetAllAsync(0);
 
             var indexViewModel = new IndexViewModel(shortUrls.ToList());
 
@@ -50,7 +50,7 @@ namespace Web.Controllers
         [HttpPost("delete/{id:Guid}")]
         public async Task<IActionResult> DeleteShortUrlAsync(Guid id)
         {
-            await _urlService.DeleteShortUrlAsync(id);
+            await _urlService.DeleteAsync(id);
 
             return RedirectToAction("Index");
         }

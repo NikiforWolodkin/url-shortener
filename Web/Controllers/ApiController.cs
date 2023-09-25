@@ -18,7 +18,7 @@ namespace Web.Controllers
         [HttpGet("short-urls")]
         public async Task<IActionResult> GetShortUrlsAsync(int page = 0)
         {
-            var shortUrls = await _urlService.GetShortUrlsAsync(page);
+            var shortUrls = await _urlService.GetAllAsync(page);
 
             return Ok(shortUrls);
         }
@@ -26,7 +26,7 @@ namespace Web.Controllers
         [HttpGet("short-urls/{id:Guid}")]
         public async Task<IActionResult> GetShortUrlAsync(Guid id)
         {
-            var shortUrl = await _urlService.GetShortUrlByIdAsync(id);
+            var shortUrl = await _urlService.GetByIdAsync(id);
 
             if (shortUrl is null)
             { 
@@ -52,7 +52,7 @@ namespace Web.Controllers
         [HttpDelete("short-urls/{id:Guid}")]
         public async Task<IActionResult> DeleteShortUrl(Guid id)
         {
-            await _urlService.DeleteShortUrlAsync(id);
+            await _urlService.DeleteAsync(id);
 
             return NoContent();
         }
